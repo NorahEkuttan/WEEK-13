@@ -1,0 +1,690 @@
+---
+title: "AD WEEK 13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+## DATA UNDERSTANDING 
+
+A Kenyan entrepreneur has created an online cryptography course and would want to advertise it on her blog. She currently targets audiences originating from various countries. In the past, she ran ads to advertise a related course on the same blog and collected data in the process. She would now like to employ your services as a Data Science Consultant to help her identify which individuals are most likely to click on her ads. 
+ 
+## METRICS OF SUCCESS
+Data cleaning
+Checking for Outliers
+Perfoming univariate analysis 
+perfomng Bivariate analysis
+
+## CONTEXT
+
+# Importing And Checking the dataset
+```{r}
+df <- read.csv("C:/Users/hp/Downloads/advertising.csv")
+head(df)
+
+```
+
+
+
+```{r}
+head(df)
+```
+
+```{r}
+str(df)
+```
+## Checking for Duplicates and Uniques values
+
+```{r}
+duplicated_row <- df[duplicated(df),]
+duplicated_row
+```
+```{r}
+unique_values <- df[!duplicated(df), ]
+
+```
+
+```{r}
+null_values = is.na(df)
+
+```
+# We do not have any null values in the in our dataset
+
+# Checking for outliers using boxplots
+
+
+```{r}
+age_boxplot <- boxplot(df$Age)
+```
+```{r}
+Area.income_boxplot = boxplot(df$Area.Income)
+```
+```{r}
+Internet_boxplot <- boxplot(df$Daily.Internet.Usage)
+```
+```{r}
+time_boxplot <- boxplot(df$Daily.Time.Spent.on.Site)
+```
+ 
+# EXPLORATORY DATA ANALYSIS
+
+## UNIVARIATE ANALYSIS
+
+# Checking for the measure of central tendency (mean,mode and median)
+
+```{r}
+Age.mean <- mean(df$Age)
+Age.mean
+```
+```{r}
+Area.Income.mean <- mean(df$Area.Income)
+Area.Income.mean
+```
+```{r}
+Daily.Internet.Usage.mean <- mean(df$Daily.Internet.Usage)
+Daily.Internet.Usage.mean
+```
+```{r}
+Time.mean <- mean(df$Daily.Time.Spent.on.Site)
+Time.mean
+```
+# finding the median
+```{r}
+Age.median <- median(df$Age)
+Age.median
+```
+
+
+```{r}
+Area.Income.median <- median(df$Area.Income)
+Area.Income.median
+```
+
+
+```{r}
+Time.median <- median (df$Daily.Time.Spent.on.Site)
+Time.median
+```
+
+
+```{r}
+Daily.Internet.Usage.mean <- mean(df$Daily.Internet.Usage)
+Daily.Internet.Usage.mean
+```
+# finding the mode 
+```{r}
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+```
+
+```{r}
+Age.mode <- getmode(df$Age)
+Age.mode
+```
+
+
+```{r}
+Area.Income.mode <- getmode(df$Area.Income)
+Area.Income.mode
+```
+
+
+```{r}
+Time.mode <-getmode(df$Daily.Time.Spent.on.Site)
+Time.mode
+```
+
+
+```{r}
+Daily.Internet.Usage.mode <- getmode(df$Daily.Internet.Usage)
+Daily.Internet.Usage.mode
+```
+
+
+## MEASURE OF DISPERSION VARIANCE AND SD
+
+```{r}
+Age.sd <- sd(df$Age)
+Age.sd
+```
+
+
+```{r}
+Area.Income.sd <- sd(df$Area.Income)
+Area.Income.sd
+```
+
+
+```{r}
+Time.sd <- sd(df$Daily.Time.Spent.on.Site)
+Time.sd
+```
+
+
+```{r}
+Daily.Internet.Usage.sd <- sd(df$Daily.Internet.Usage)
+Daily.Internet.Usage.sd
+```
+
+Checking for varinace
+
+```{r}
+Age.variance <- var(df$Age)
+Age.variance
+```
+
+
+```{r}
+Area.Income.variance <- var(df$Area.Income)
+Area.Income.variance
+```
+
+
+```{r}
+Time.variance <- var(df$Daily.Time.Spent.on.Site)
+Time.variance
+```
+
+
+```{r}
+Daily.Internet.Usage.variance <- var(df$Daily.Internet.Usage)
+Daily.Internet.Usage.variance
+```
+# Frequency tables
+
+```{r}
+unique(df[c('Country')])
+
+```
+
+
+```{r}
+MALE <- (df$Male)
+male_frequency <- table(MALE)
+male_frequency
+```
+
+```{r}
+barplot(male_frequency)
+```
+
+```{r}
+Clickon.add <- (df$Clicked.on.Ad)
+click_add.frequency <- table(Clickon.add)
+click_add.frequency
+```
+
+
+```{r}
+clickadd.barplot <- barplot(click_add.frequency)
+clickadd.barplot
+```
+The ratio of male to female is almost proportional.
+The number of people who clicked the add was 500 and those who did not click the ad was also 500 hence it was uniform
+Both the Time stamp and city and countries have all unique values hence i was not able to represent them in a bar chart
+
+## BIVARIATE ANALYSIS
+# Findind correlation
+
+```{r}
+AGE <- df$Age
+Income.Area <- df$Area.Income
+Internet.Usage <- df$Daily.Internet.Usage
+Time <- df$Daily.Time.Spent.on.Site
+clickad <- df$Clicked.on.Ad
+MALE <- df$Male
+
+```
+
+```{r}
+cor(AGE,Time)
+```
+
+
+```{r}
+cor(AGE,Income.Area)
+```
+
+
+```{r}
+cor(AGE,clickad)
+
+```
+Age and click on add are positively correlated in that as age increases the probability of clickikng on an add also increases
+
+```{r}
+cor(AGE, Internet.Usage)
+```
+Age is negative correlated to internet usage in that as the age of an individual increases their daily internet usage decreases
+
+```{r}
+cor(AGE,MALE)
+```
+AGE and male are weakly correlated
+
+```{r}
+cor(Time,Internet.Usage)
+```
+Time and internet usage are positive correlated thus as daily time spent on internet increases the daily internet usage also increases
+
+```{r}
+cor(Time,clickad)
+```
+Daily time spent on the internet is strongly negatively correlated to the click on add this means that the more time one spend on the internet the lower probablity toclick on the ads
+```{r}
+cor(Time,Income.Area)
+```
+Time and income area are moderately correlated
+```{r}
+
+cor(Income.Area,Internet.Usage)
+```
+Area of income and daily internet usage are moderate positively correlated
+
+```{r}
+cor(Income.Area,clickad)
+```
+Area of income and click on ad as negatively 
+
+# Covariance
+
+```{r}
+cov(AGE,Time)
+```
+
+```{r}
+cov(AGE, Income.Area)
+```
+
+
+```{r}
+cov(AGE, clickad)
+```
+
+
+```{r}
+cov(AGE, Internet.Usage)
+```
+
+
+```{r}
+cov(Time,Internet.Usage)
+```
+
+
+```{r}
+cov(Time,clickad)
+```
+
+
+```{r}
+cov(Time,Income.Area)
+
+```
+
+
+```{r}
+cov(Income.Area,clickad)
+```
+
+
+```{r}
+cov(Income.Area,Internet.Usage)
+```
+```{r}
+cov(Internet.Usage,clickad)
+```
+
+
+## Scatter plots
+
+plot(eruptions, waiting, xlab="Eruption duration", ylab="Time waited")
+
+```{r}
+plot(Income.Area, clickad, xlab="Area income", ylab="Click on add")
+
+```
+
+```{r}
+plot(AGE, Time, xlab="AGE", ylab="Time")
+
+```
+
+
+```{r}
+plot(Time, clickad, xlab="Eruption duration", ylab="Time waited")
+
+```
+ ## IMPLEMENTING THE SOLUTION
+
+## logistic Regression
+
+```{r}
+head(df)
+```
+
+```{r}
+df
+```
+
+```{r}
+Clicked.on.Ad <- df$Clicked.on.ad
+Age <- df$Age
+Daily.Internet.Usage <- df$Daily.Internet.Usage
+Daily.Time.Spent.on.Site <- df$Daily.Time.Spent.on.Site
+Area.Income<- df$Area.Income
+Gender <- df$Male
+```
+
+
+
+
+Model fitting
+We split the data into two chunks: training and testing set. The training set will be used to fit our model which we will be testing over the testing set.
+
+
+```{r}
+train <- df[1:800,]
+test <- df[801:1000,]
+```
+
+Now, let’s fit the model. Be sure to specify the parameter family=binomial in the glm() function.
+
+```{r}
+Clicked.on.Ad <- train$Clicked.on.ad
+Age <- train$Age
+Daily.Internet.Usage <- train$Daily.Internet.Usage
+Daily.Time.Spent.on.Site <- train$Daily.Time.Spent.on.Site
+Area.Income<- train$Area.Income
+Gender <- train$Male
+```
+
+
+
+```{r}
+model <- glm(Clicked.on.Ad ~ Age + Daily.Internet.Usage + Daily.Time.Spent.on.Site + Area.Income + Gender, data=train, family = binomial(link = 'logit'))
+```
+
+ 
+
+```{r}
+summary(model)
+```
+
+The negative coefficient for this predictor suggests that all other variables being equal, the male passenger is less likely to click on ad. Remember that in the logit model the response variable is log odds: ln(odds) = ln(p/(1-p)) = a*x1 + b*x2 + … + z*xn. Since male is a dummy variable, being male reduces the log odds by 0.06847 while a unit increase in age increases the log odds by 0.01648.
+
+
+Now we can run the anova() function on the model to analyze the table of deviance
+
+
+```{r}
+anova(model, test="Chisq")
+```
+
+
+The difference between the null deviance and the residual deviance shows how our model is doing against the null model (a model with only the intercept). The wider this gap, the better. Analyzing the table we can see the drop in deviance when adding each variable one at a time. Again, adding  Age, Daily.Internet.Usage, Daily.Time.Spent.on.Site, Area.Income,Gender,significantly reduces the residual deviance. A large p-value here indicates that the model without the variable explains more or less the same amount of variation. Ultimately what you would like to see is a significant drop in deviance and the AIC.
+
+
+```{r}
+library(pscl)
+pR2(model)
+```
+The r^2 is 0.70 meaning that our Variables x explain Y which is clicked.on.ad
+by 70%
+  
+```{r}
+Clicked.on.Ad <- test$Clicked.on.ad
+Age <- test$Age
+Daily.Internet.Usage <- test$Daily.Internet.Usage
+Daily.Time.Spent.on.Site <- test$Daily.Time.Spent.on.Site
+Area.Income<- test$Area.Income
+Gender <- test$Male
+```
+
+
+```{r}
+head(test)
+```
+
+```{r}
+fitted.results <- predict(model,newdata=subset(test,select=c(1,2,3,4,7)),type='response')
+fitted.results <- ifelse(fitted.results > 0.5,1,0)
+misClasificError <- mean(fitted.results != test$Clicked.on.Ad)
+print(paste('Accuracy',1-misClasificError))
+```
+The 0.96 accuracy on the test set is quite a good result. However, keep in mind that this result is somewhat dependent on the manual split of the data that I made earlier, therefore if you wish for a more precise score, you would be better off running some kind of cross validation such as k-fold cross validation.
+
+## KNN
+## Implementing the solution
+
+#selecting numerical columns
+
+```{r}
+df.n <- df[,c(1:4,7,10)]
+head(df.n)
+```
+
+```{r}
+library(caTools)
+```
+
+# Splitting data into train
+# and test data
+```{r}
+split <- sample.split(df.n, SplitRatio = 0.7)
+train_cl <- subset(df.n, split == "TRUE")
+test_cl <- subset(df.n, split == "FALSE")
+```
+
+```{r}
+# Feature Scaling
+train_scale <- scale(train_cl[, 1:5])
+test_scale <- scale(test_cl[, 1:5])
+```
+
+```{r}
+library(class)
+```
+
+```{r}
+ model <- knn(train = train_scale,
+                      test = test_scale,
+                      cl = train_cl$Clicked.on.Ad,
+                      k = 32)
+```
+
+#### K NEAREST NEIGHBOURS
+
+
+
+```{r}
+library(caret)
+cm <- table(test_cl$Clicked.on.Ad, model)
+confusionMatrix(cm)
+```
+The accuracy for this model is Accuracy : 0.964  
+
+
+
+
+
+#library(gmodels)
+
+
+```{r}
+#CrossTable(x = test_sp, y=model,prop.chisq =FALSE )
+```
+
+#NAIVE BAYES
+
+# Loading package
+```{r}
+library(e1071)
+library(caTools)
+library(caret)
+```
+
+# Fitting Naive Bayes Model 
+# to training dataset
+```{r}
+set.seed(120)  # Setting Seed
+bayes <- naiveBayes(Clicked.on.Ad ~ ., data = train_cl)
+```
+
+
+
+
+```{r}
+# Predicting on test data'
+y_pred <- predict(bayes, newdata = test_cl)
+  
+# Confusion Matrix
+cm <- table(test_cl$Clicked.on.Ad, y_pred)
+
+# Model Evauation
+confusionMatrix(cm)
+
+##SVM
+
+
+
+intrain <- createDataPartition(y = df$Clicked.on.Ad, p= 0.7, list = FALSE)
+train <- df[1:800,]
+test <- df[801:1000,]
+```
+
+## RANDOM FOREST# Installing package
+
+# Loading package
+```{r}
+library(caTools)
+library(randomForest)
+rfNews()
+```
+
+```{r}
+# selecting numerical columns
+df.n <- df[,c(1:4,7,10)]
+head(df.n)
+
+```
+
+  
+# Splitting data in train and test data
+```{r}
+split <- sample.split(df.n, SplitRatio = 0.7)
+split
+```
+
+  
+```{r}
+train_n <- subset(df.n, split == "TRUE")
+test_n <- subset(df.n, split == "FALSE")
+  
+```
+
+# Fitting Random Forest to the train dataset
+```{r}
+set.seed(120)  # Setting seed
+classifier_RF <- randomForest(as.factor(Clicked.on.Ad) ~ ., 
+                        data = train_n, 
+                        importance = TRUE,
+                        proximity = TRUE)
+
+  
+classifier_RF
+```
+
+  
+# Predicting the Test set results
+```{r}
+y_pred = predict(classifier_RF, newdata = test[-6])
+```
+
+```{r}
+  
+# Confusion Matrix
+confusion_mtx = table(test[, 6], y_pred)
+confusion_mtx
+  
+# Plotting model
+plot(classifier_RF)
+```
+
+  
+# Importance plot
+```{r}
+importance(classifier_RF)
+```
+
+  
+# Variable importance plot
+```{r}
+varImpPlot(classifier_RF)
+```
+
+
+##  SVM 
+# Splitting the dataset into the Training set and Test set
+
+```{r}
+
+library(caTools)
+  
+set.seed(123)
+split = sample.split(df.n$Clicked.on.Ad, SplitRatio = 0.75)
+  
+train = subset(df.n, split == TRUE)
+test = subset(df.n, split == FALSE)
+```
+
+```{r}
+library(e1071)
+  
+classifier = svm(formula = Clicked.on.Ad ~ .,
+                 data = train,
+                 type = 'C-classification',
+                 kernel = 'linear')
+```
+
+```{r}
+
+# Predicting the Test set results
+y_pred = predict(classifier, newdata = test[-6])
+
+```
+
+```{r}
+
+# Making the Confusion Matrix
+cm = table(test[, 6], y_pred)
+cm
+plot(cm)
+```

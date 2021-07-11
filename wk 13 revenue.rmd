@@ -1,0 +1,387 @@
+---
+title: "WEEK 2 SECONDARY PROJECT"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+##Problem Definition
+
+Kira Plastinina is a Russian brand that is sold through a defunct chain of retail stores in Russia, Ukraine, Kazakhstan, Belarus, China, Philippines, and Armenia. The brand’s Sales and Marketing team would like to understand their customer’s behavior from data that they have collected over the past year. More specifically, they would like to learn the characteristics of customer groups.
+Data Sourcing
+
+
+##  Check the Data
+
+```{r}
+data<-read.csv("http://bit.ly/EcommerceCustomersDataset")
+head(df)
+```
+```{r}
+
+```
+
+
+```{r}
+str(data)
+```
+## Perform Data Cleaning
+# Checking for Duplicates and Uniques values
+
+```{r}
+duplicated_row <- data[duplicated(data),]
+
+```
+
+
+
+```{r}
+unique_values <- data[!duplicated(data), ]
+```
+
+
+
+```{r}
+df_d= dim(duplicated_row)
+df_d
+```
+Checking and dropping the null values 
+```{r}
+null_values = colSums(is.na(data))
+
+
+```
+dropping the duplicated
+
+```{r}
+df <- data[!duplicated(data), ]
+
+```
+```{r}
+df <- na.omit(data) # Method 1 - Remove NA
+
+```
+
+```{r}
+null_values = colSums(is.na(df))
+
+null_values
+```
+
+```{r}
+par(mfrow = c(2,2), mar = c(5,4,2,2))
+
+```
+
+# Checking for outliers
+
+```{r}
+df_num <- df[, !sapply(df, is.character)]
+df_num <- subset(df_num,select = c(1,2,3,4,5,6,7,8,10,11,12,13,14))
+boxplot(df_num, main='BoxPlots')
+```
+
+## EDA
+## Univariate Analysis
+## Finding mean mode median
+
+```{r}
+str(df)
+```
+
+
+
+
+```{r}
+library(dplyr)
+df %>% summarise_if(is.numeric, median)
+```
+
+```{r}
+library(dplyr)
+df %>% summarise_if(is.numeric, mean)
+
+```
+
+
+```{r}
+library(psych)
+desc <- describe(df)
+desc
+```
+
+## standard deviation and variance
+
+```{r}
+my.sd <- unlist(lapply(df, sd)); my.sd
+```
+```{r}
+my.var <- unlist(lapply(df, var)); my.var
+```
+```{r}
+summary(df)
+```
+
+# Barplots
+
+```{r}
+Month<- (df$Month)
+Month_frequency <- table(Month)
+Month_frequency
+```
+```{r}
+Month_barplot <- barplot(Month_frequency)
+Month_barplot
+```
+The  most common months for visiting any particular pages  was March ,May and November
+
+# Administrative
+
+```{r}
+Administrative<- (df$Administrative)
+Administrative_frequency <- table(Administrative)
+Administrative_frequency
+```
+
+ 
+ 
+ VisitorType 
+
+```{r}
+ VisitorType <- (df$ VisitorType)
+ VisitorType_frequency <- table(VisitorType)
+ VisitorType_frequency
+```
+
+
+
+```{r}
+VisitorType_barplot <- barplot(VisitorType_frequency)
+VisitorType_barplot 
+```
+
+Returning visitors were the most common followed by the New visitors
+
+
+```{r}
+Weekend <- (df$Weekend)
+Weekend_frequency <- table(Weekend)
+Weekend_frequency
+```
+
+
+
+```{r}
+Weekend_barplot <- barplot(Weekend_frequency)
+Weekend_barplot
+```
+
+```{r}
+Region<- (df$Region)
+Region_frequency <- table(Region)
+Region_frequency
+```
+
+
+
+```{r}
+Region_barplot <- barplot(Region_frequency)
+Region_barplot 
+```
+
+Region 1 had the most number of counts followed by region 3
+
+
+```{r}
+Revenue <- (df$Revenue)
+Revenue_frequency <- table(Revenue)
+Revenue_frequency
+```
+
+
+
+```{r}
+Revenue_barplot <- barplot(Revenue_frequency)
+Revenue_barplot 
+```
+
+
+```{r}
+TrafficType <- (df$TrafficType)
+TrafficType_frequency <- table(TrafficType)
+TrafficType_frequency
+```
+
+
+
+```{r}
+TrafficType_barplot <- barplot(TrafficType_frequency)
+TrafficType_barplot 
+```
+ 
+ 1,2 and 3 were the most popular type of Traffic 
+
+## BIVARIATE ANALYSIS
+
+```{r}
+# Get a subset of variables
+correlationsubset <- df[c(1,2,3,4,5,6,7,8,9,10,12,13,14,15)]
+# Get the correlation matrix
+cor(correlationsubset, use="complete.obs")
+```
+
+Administration is positive correlated to informational  and product related sites and their duration, And negatively weakly correlated to exit rates and bounce rates.
+
+Bounce rates is strongly corelated to exit rates which means the customer is most likely to exit if the bounce rate is high.
+
+## IMPLEMENTING THE SOLUTION
+# KMEANS CLUSTERING
+
+normalizing the data
+```{r}
+df_new <- df[, c(1:10,12:14)]
+head(df_new)
+```
+
+
+```{r}
+normalize <- function(x){
+  return ((x-min(x)) / (max(x)-min(x)))
+}
+
+df1 <- normalize (df_new)
+
+```
+
+
+```{r}
+# this step was added because finding the optimum number of clusters took sometime. therefore taking a random sample of 2000 
+rand_df <- df1[sample(nrow(df1), size=1000), ]
+head(rand_df)
+```
+
+### K means Clustering
+
+```{r}
+#revenue labels
+revenue_label <- df$Revenue
+table(revenue_label)
+```
+
+```{r}
+# Loading the required libraries
+library(factoextra)
+library(NbClust)
+library (cluster)
+```
+
+```{r}
+# Elbow method
+fviz_nbclust(rand_df, kmeans, method = "wss") +
+    geom_vline(xintercept = 3, linetype = 2)+
+  labs(subtitle = "Elbow method")
+```
+
+```{r}
+# Silhouette method
+fviz_nbclust(rand_df, kmeans, method = "silhouette")+
+  labs(subtitle = "Silhouette method")
+```
+Cluster is 2 in the silhoutte method so we are going to be using both methods
+
+```{r}
+# Gap statistic
+# nboot = 50 to keep the function s…
+result<- kmeans(rand_df, centers=3,nstart = 100) 
+
+```
+
+```{r}
+result$size 
+```
+```{r}
+result$centers 
+```
+```{r}
+result$cluster
+```
+
+
+
+```{r}
+fviz_cluster(result, data = rand_df)
+```
+
+From our clustering we can see that the revenue columns which was partitioned into true or false revenue_label
+FALSE  TRUE 
+10408  1908  is close to the kmeans cluster we got of K-means clustering with 3 clusters of which most variables lie in cluster 1 and 2 with one additional distinct cluster 3
+
+HIERACHICAL CLUSTERING
+```{r}
+df2 <- scale(df_new)
+head(df_new)
+```
+
+
+```{r}
+rand_df <- df2[sample(nrow(df2), size=1500), ]
+head(rand_df)
+```
+
+
+
+```{r}
+dy <- dist(rand_df, method = "manhattan")
+res.h <- hclust(dy, method = "ward.D2")
+plot(res.h, cex=0.6, hang=-1)
+rect.hclust(res.h , k =3, border = 2:6)
+abline(h = 40, col = 'green')
+
+```
+```{r}
+suppressPackageStartupMessages(library(dendextend))
+avg_dend_obj <- as.dendrogram(res.h)
+avg_col_dend <- color_branches(avg_dend_obj, h = 150)
+plot(avg_col_dend)
+```
+If we use a K of 3 we can see that we have blue as the biggest cluster followed by red then finally green.
+
+Conclusion and reccomendation
+
+1. Focus more on this three months because that where most customers visit any pages, March ,May and November
+
+2. Returning visitors were the most common followed by the New visitors
+
+3.Find out why Region 1 and Region 3 had the most number of counts and 
+
+4 1,2 and 3 were the most popular type of Traffic 
+
+5.From our Kmeans clustering we can see that the revenue columns which was partitioned into true or false revenue_label
+FALSE  TRUE 
+10408  1908  
+This is close to the kmeans cluster we got of K-means clustering with 3 clusters of which most variables lie in cluster 1 and 2 which is most likely to be true of false with one additional distinct cluster 3
+
+6 From our hierarchical clustering If we use a K of 3 we can see that we have blue as the biggest cluster followed by red then finally green.
+
